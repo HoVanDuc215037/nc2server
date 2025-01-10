@@ -1,0 +1,4 @@
+mongoose
+food(name, description, price, image, rate);
+user(username, password, role);
+order(customer_name, customer_phone, object[{id(food), quality}]);
