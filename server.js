@@ -26,7 +26,7 @@ app.use('/api/orders', orderRoutes); // Đường dẫn cho orders
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:8080',
+    origin: process.env.CLIENT_URL || 'http://192.168.43.181:8080',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
