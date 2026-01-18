@@ -16,6 +16,7 @@ import http from "http";
 import { Server } from "socket.io";
 
 const app = express();
+app.set('trust proxy', 1);
 
 app.use(session({
   secret: 'secret-key',
