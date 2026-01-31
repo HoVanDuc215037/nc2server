@@ -1,4 +1,5 @@
 const ownerServices = require("../services/ownerServices");
+const userServices = require("../services/userServices");
 
 exports.createRestaurant = async (req, res) => {
     try {
@@ -46,10 +47,43 @@ exports.updateMap = async (req, res) => {
     }
 }
 
-exports.createANewAccount = async (req, res) => { }
+exports.createAccount = async (req, res) => {
+    try {
+        const accountExxist = await userServices.checkExistAccount(req.body.account.email);
+        if (accountExxist) {
+            res.status(200).json({ message: "Account with this email already exists", result: false });
+            return;
+        }
+        req.body.account.email = req.body.account.email + '@gmail.com';
+        const account = await ownerServices.createAccount(req.body.account);
+        res.status(200).json({ account: account, result: true });
+        return;
+    } catch (error) {
+        res.status(500).json({ message: error.message, result: false });
+        return;
+    }
+}
 
-exports.deleteAnAccount = async (req, res) => { }
+exports.deleteAccount = async (req, res) => {
+    try {
+        const account = await ownerServices.deleteAccount(req.body._id);
+        res.status(200).json(account);
+        return;
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+        return;
+    }
+}
 
-exports.getAccountCreatedByAOwner = async (req, res) => { }
+exports.getAccountCreatedByAOwner = async (req, res) => {
+    try {
+        const account = await ownerServices.getAccountCreatedByAOwner(req.query.ownerEmail + '@gmail.com');
+        res.status(200).json(account);
+        return;
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+        return;
+    }
+}
 
 exports.getStatistics = async (req, res) => { }

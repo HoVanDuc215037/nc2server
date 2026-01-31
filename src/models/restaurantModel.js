@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const restaurantSchema = new mongoose.Schema({
     name: { type: String, require: false },
-    createdBy: { type: String, require: false }, //The owner's email
+    createdBy: { type: String, require: false },
     image: { type: String, default: null },
     textLocation: { type: String, required: false },
     map: {

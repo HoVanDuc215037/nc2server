@@ -53,3 +53,31 @@ exports.getRestaurantCreatedByEmail = async (email) => {
         throw new Error('Failed to retrieve Map: ' + error.message);
     }
 };
+
+exports.createAccount = async (accountData) => {
+    try {
+        const newAccount = new Account(accountData);
+        const savedAccount = await newAccount.save();
+        return savedAccount;
+    } catch (error) {
+        throw new Error('Fail owner create account: ' + error.message);
+    }
+}
+
+exports.deleteAccount = async (accountID) => {
+    try {
+        const deletedAccount = await Account.findByIdAndDelete(accountID);
+        return deletedAccount;
+    } catch (error) {
+        throw new Error('Fail owner delete account: ' + error.message);
+    }
+}
+
+exports.getAccountCreatedByAOwner = async (email) => {
+    try {
+        const account = await Account.find({ createdBy: email });
+        return account;
+    } catch (error) {
+        throw new Error('Failed to retrieve account: ' + error.message);
+    }
+}

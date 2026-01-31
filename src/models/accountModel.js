@@ -5,9 +5,9 @@ const accountSchema = new mongoose.Schema({
     username: { type: String, required: false },
     password: { type: String, select: false },
     name: { type: String, required: false },
-    role: { type: String, enum: ['admin', 'owner', 'staff'], default: 'owner' },
-    avatar: { type: String, default: null },
-    createdBy: { type: String, required: false },// The creator's email of this account
+    role: { type: String, enum: ['admin', 'owner', 'staff'] },
+    avatar: { type: String },
+    createdBy: { type: String, required: false },
     haveRestaurant: { type: Boolean, default: false },
     haveMap: { type: Boolean, default: false },
 }, { timestamps: false },

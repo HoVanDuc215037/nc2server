@@ -1,5 +1,6 @@
 const Account = require('../models/accountModel');
 const Restaurant = require('../models/restaurantModel');
+const bcrypt = require('bcrypt');
 
 exports.getAccountDetailByEmail = async (email) => {
     try {
@@ -28,9 +29,34 @@ exports.getProfile = async (email) => {
 
 exports.updateProfile = async (email, data) => {
     try {
-        const updatedAccount = await Account.findOneAndUpdate({ email: email }, { name: data.name, image: data.image });
+        const updatedAccount = await Account.findOneAndUpdate({ email: email }, { name: data.name, avatar: data.avatar });
         return updatedAccount;
     } catch (error) {
         throw new Error("Lỗi cập nhật profile: ", error);
+    }
+}
+
+exports.signIn = async (username, password) => {
+    try {
+        const account = await Account.findOne({ username: username }).select('+password');
+        if (!account) return null;
+        const isMatch = await bcrypt.compare(password, account.password);
+        if (!isMatch) return null;
+        return account;
+    } catch (error) {
+        throw new Error("Lỗi đăng nhập: ", error);
+    }
+}
+
+exports.checkExistAccount = async (email) => {
+    try {
+        let account = {}; let accountCreated = {};
+        account = await Account.findOne({ email: email });
+        if (!account) accountCreated = await Account.findOne({ username: email });
+        if (!accountCreated) return false;
+        return true;
+    } catch (error) {
+        throw new Error('Lỗi kiểm tra tài khoản: ' + error.message);
+        return false;
     }
 }

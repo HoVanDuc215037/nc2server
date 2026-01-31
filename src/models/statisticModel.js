@@ -1,35 +1,10 @@
 const mongoose = require('mongoose');
 
-const permanent_orderSchema = new mongoose.Schema({
-    restaurant_infor: {//restaurantId___tableId
-        type: String,
-        required: false,
-        trim: true
-    },
-    customer_infor: {//name___phone
-        type: String,
-        required: false,
-        trim: true
-    },
-    productions: [
-        {
-            productionId: {
-                type: mongoose.Schema.Types.ObjectId,
-                required: false,
-            },
-            quantity: {
-                type: Number,
-                required: false,
-                min: 1,
-            },
-            sale: {
-                type: Number,
-                default: 1
-            }
-        }
-    ],
-    totalPrice: { type: Number, required: false }
+const statisticSchema = new mongoose.Schema({
+    owner_email: { type: String },
+    total_orders: { type: Number, default: 0 },
+    total_revenue: { type: Number, default: 0 },
 }, { timestamps: true });
 
-const PermanentOrder = mongoose.model('PermanentOrder', permanent_orderSchema);
-module.exports = PermanentOrder;
+const Statistic = mongoose.model('Statistic', statisticSchema);
+module.exports = Statistic;

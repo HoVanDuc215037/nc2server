@@ -1,6 +1,5 @@
 const Production = require('../models/productionModel');
 
-// Create a new production item
 exports.createProduction = async (productionData) => {
   try {
     const newProduction = new Production(productionData);
@@ -11,7 +10,6 @@ exports.createProduction = async (productionData) => {
   }
 };
 
-// Get all production items
 exports.getAllProductions = async () => {
   try {
     return await Production.find();
@@ -20,7 +18,6 @@ exports.getAllProductions = async () => {
   }
 };
 
-// Get a specific production item by ID
 exports.getProductionById = async (productionId) => {
   try {
     return await Production.findById(productionId);
@@ -29,7 +26,7 @@ exports.getProductionById = async (productionId) => {
   }
 };
 
-exports.getProductionByCreatedEmail = async (email, page, pageSize) => {
+exports.getProductionByCreatedEmail = async (email) => {
   try {
     return await Production.find({ createdBy: email });
   } catch (error) {
@@ -37,7 +34,6 @@ exports.getProductionByCreatedEmail = async (email, page, pageSize) => {
   }
 };
 
-// Update a production item
 exports.updateProduction = async (productionId, productionData) => {
   try {
     const production = await Production.findByIdAndUpdate(productionId, productionData);
@@ -47,7 +43,6 @@ exports.updateProduction = async (productionId, productionData) => {
   }
 };
 
-// Delete a production item
 exports.deleteProduction = async (productionId) => {
   try {
     const production = await Production.findByIdAndDelete(productionId);

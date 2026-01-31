@@ -1,13 +1,12 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
 dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
-// Middleware to verify JWT token
 exports.verifyToken = (req, res, next) => {
-  //console.log(req.headers);
-  const token = req.headers['Authorization']?.split(' ')[1]; // Extract token from Bearer
+  const token = req.headers['Authorization']?.split(' ')[1];
 
   if (!token) {
     return res.status(403).json({ message: 'Access denied. No token provided.' });
@@ -18,7 +17,12 @@ exports.verifyToken = (req, res, next) => {
       return res.status(401).json({ message: 'Invalid token.' });
     }
 
-    req.user = decoded; // Attach decoded user information to the request object
+    req.user = decoded;
     next();
   });
 };
+
+exports.hashPassword = async (req, res, next) => {
+  req.body.account.password = await bcrypt.hash(req.body.account.password, 10);
+  next();
+}

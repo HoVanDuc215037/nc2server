@@ -13,13 +13,13 @@ const productionSchema = new mongoose.Schema({
         min: 1
     },
     image: {
-        type: String, // This will hold the base64 encoded image
+        type: String,
         default: null,
     },
     tags: {
         type: [String],
     },
-    createdBy: { type: String, required: false }//owner's email
+    createdBy: { type: String, required: false }
 }, { timestamps: true },
 );
 

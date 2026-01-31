@@ -1,15 +1,21 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-    owner_email: { type: String },//=restaurant room
-    customer_infor: {//name___phone
+    owner_email: { type: String },
+    customer_infor: {
         type: String
     },
     productions: [
         {
-            productionId: {
+            _id: {
                 type: mongoose.Schema.Types.ObjectId,
                 required: false,
+            },
+            name: {
+                type: String,
+            },
+            price: {
+                type: Number,
             },
             quantity: {
                 type: Number,
@@ -18,6 +24,7 @@ const orderSchema = new mongoose.Schema({
             }
         }
     ],
+    table: { type: Number },
     status: { type: String, enum: ['pending', 'done', 'rejected'], default: 'pending' },
     totalPrice: { type: Number, required: false }
 }, { timestamps: true });

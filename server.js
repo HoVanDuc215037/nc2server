@@ -16,8 +16,11 @@ import http from "http";
 import { Server } from "socket.io";
 
 const app = express();
-app.set('trust proxy', 1);
-
+//app.set('trust proxy', 1);
+app.use((req, res, next) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  next();
+});
 app.use(session({
   secret: 'secret-key',
   resave: false,
@@ -55,11 +58,12 @@ io.on("connection", socket => {
     socket.join(email);
   });
   socket.on("customer_order", (order) => {
-    const email = order.ownerEmail;
+    const email = order.owner_email;
     io.to(email).emit("restaurant_order", order);
   });
-  socket.on("staff_update_status", (email, order_id) => {
-    io.to(email).emit("order_success", order_id);
+  socket.on("update_order_status", ({ room, order }) => {
+    //console.log("update", order.table);
+    io.to(room).emit("order_done", order.table);
   });
 });
 const PORT = process.env.PORT || 3000;

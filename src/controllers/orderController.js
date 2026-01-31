@@ -4,7 +4,7 @@ exports.createOrder = async (req, res) => {
   try {
     const data = req.body;
     const order = await orderServices.createOrder(data);
-    res.status(201).json(order);
+    res.status(200).json(order);
     return;
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -15,8 +15,7 @@ exports.createOrder = async (req, res) => {
 exports.updateOrder = async (req, res) => {
   try {
     const orderId = req.body.orderId;
-    const status = req.body.status;
-    const updatedOrder = await orderServices.updateOrderStatus(orderId, status);
+    const updatedOrder = await orderServices.updateOrderStatus(orderId);
     res.status(200).json(updatedOrder);
     return;
   } catch (error) {
@@ -27,7 +26,7 @@ exports.updateOrder = async (req, res) => {
 
 exports.getPendingOrders = async (req, res) => {
   try {
-    const ownerEmail = req.query.email;
+    const ownerEmail = req.query.ownerEmail;
     const orders = await orderServices.getPendingOrders(ownerEmail);
     res.status(200).json(orders);
     return;
@@ -39,7 +38,7 @@ exports.getPendingOrders = async (req, res) => {
 
 exports.getDoneOrders = async (req, res) => {
   try {
-    const ownerEmail = req.query.email;
+    const ownerEmail = req.query.ownerEmail;
     const order = await orderServices.getDoneOrders(ownerEmail);
     res.status(200).json(order);
     return;

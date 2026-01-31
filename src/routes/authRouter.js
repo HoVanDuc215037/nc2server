@@ -19,8 +19,8 @@ router.get(
         session: false,
     }),
     (req, res) => {
-        const token = jwt.sign({ user: { email: req.user.email, name: req.user.name, role: req.user.role, haveMap: req.user.haveMap, haveRestaurant: req.user.haveRestaurant } }, SECRET_KEY, { expiresIn: '24h' });
-        res.redirect(`https://nc2client.onrender.com/login-success?e078cb80a315c1545d5396567810bf94dc360f30bfdaae14ca6aad6cf9fe768d=${token}`);//256
+        const token = jwt.sign({ user: { email: req.user.email, name: req.user.name, role: req.user.role, haveMap: req.user.haveMap, haveRestaurant: req.user.haveRestaurant, createdBy: req.user.createdBy } }, SECRET_KEY, { expiresIn: '24h' });
+        res.redirect(`http://localhost:8080/login-success?e078cb80a315c1545d5396567810bf94dc360f30bfdaae14ca6aad6cf9fe768d=${token}`);//256
     }
 );
 

@@ -26,16 +26,14 @@ passport.use(
             callbackURL: '/auth/google/callback',
         },
         async (accessToken, refreshToken, profile, done) => {
-            //console.log(profile);
             try {
                 let account = await Account.findOne({ email: profile.emails[0].value }).select('-password');
-                //console.log(account);
                 if (!account) {
                     const avatarBase64 = profile.photos?.length
                         ? await imageUrlToBase64(profile.photos[0].value)
                         : null;
                     let newAccount = await Account.create({
-                        // googleId: profile.id,
+                        username: profile.emails[0].value.split('@')[0],
                         email: profile.emails[0].value,
                         name: profile.displayName,
                         avatar: avatarBase64,

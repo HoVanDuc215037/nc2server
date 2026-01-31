@@ -7,8 +7,8 @@ router.post('/', productionController.createProduction);
 router.get('/', productionController.getAllProductions);
 router.get('/email', productionController.getProductionByCreatedEmail);
 router.get('/byid', productionController.getProductionById);
-router.put('/update', authMiddleware.verifyToken, productionController.updateProduction);
-router.delete('/', authMiddleware.verifyToken, productionController.deleteProduction);
+router.put('/update', productionController.updateProduction);
+router.post('/delete', productionController.deleteProduction);
 router.get('/tags', productionController.getProductionTags);
 
 module.exports = router;

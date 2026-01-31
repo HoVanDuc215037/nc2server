@@ -1,6 +1,5 @@
 const productionService = require('../services/productionServices');
 
-// Create a new production item (Admin only)
 exports.createProduction = async (req, res) => {
   try {
 
@@ -13,7 +12,6 @@ exports.createProduction = async (req, res) => {
   }
 };
 
-// Get all production items
 exports.getAllProductions = async (req, res) => {
   try {
     const productions = await productionService.getAllProductions();
@@ -25,7 +23,6 @@ exports.getAllProductions = async (req, res) => {
   }
 };
 
-// Get a production item by ID
 exports.getProductionById = async (req, res) => {
   try {
     const production = await productionService.getProductionById(req.query.id);
@@ -43,7 +40,7 @@ exports.getProductionById = async (req, res) => {
 
 exports.getProductionByCreatedEmail = async (req, res) => {
   try {
-    const production = await productionService.getProductionByCreatedEmail(req.query.email + "@gmail.com", req.query.page, req.query.pageSize);
+    const production = await productionService.getProductionByCreatedEmail(req.query.email + "@gmail.com");
     res.status(200).json(production);
     return;
   } catch (error) {
@@ -52,7 +49,6 @@ exports.getProductionByCreatedEmail = async (req, res) => {
   }
 };
 
-// Update a production item (Admin only)
 exports.updateProduction = async (req, res) => {
   try {
     const production = await productionService.updateProduction(req.query.id, req.body);
@@ -64,10 +60,9 @@ exports.updateProduction = async (req, res) => {
   }
 };
 
-// Delete a production item (Admin only)
 exports.deleteProduction = async (req, res) => {
   try {
-    await productionService.deleteProduction(req.query.id);
+    await productionService.deleteProduction(req.body._id);
     res.status(200).json({ message: 'Production deleted successfully' });
     return;
   } catch (error) {

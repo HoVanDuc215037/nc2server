@@ -1,44 +1,63 @@
 const userServices = require('../services/userServices');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
 
 dotenv.config();
 const SECRET_KEY = process.env.SECRET_KEY;
 
-exports.login = async (req, res) => {
-  //google
-  const { username, password } = req.body;
+exports.signIn = async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
   //console.log(req.body);
-  const user = users.find(u => u.username === username && u.password === password);
-  if (!user) {
-    return res.status(401).json({ message: 'Invalid username or password' });
+  try {
+    const user = await userServices.signIn(username, password);
+    if (!user) { res.status(401).json({ message: "Không đúng password hoặc username", account: null }); return; }
+    const token = jwt.sign({ user: { email: user.email, name: user.name, role: user.role, haveMap: user.haveMap, haveRestaurant: user.haveRestaurant, createdBy: user.createdBy } }, SECRET_KEY, { expiresIn: '24h' });
+    res.status(200).json({ token: token });//256
+    return;
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+    return;
   }
-  const token = jwt.sign(
-    { username: user.username, role: user.role },
-    SECRET_KEY,
-    { expiresIn: '1h' }
-  );
-  res.json({ message: 'Login successful', token });
 };
 
-exports.signup = async (req, res) => { }
+exports.signUp = async (req, res) => {
+  const { username, password } = req.body;
 
-exports.verifyToken = async (req, res) => {
-  const token = req.headers['authorization']?.split(' ')[1];
-  if (!token) {
-    return res.status(403).json({ message: 'No token provided' });
-  }
-  jwt.verify(token, SECRET_KEY, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: 'Invalid token' });
+  try {
+    if (!username || !password) {
+      return res.status(400).json({ message: "Thiếu thông tin đăng ký" });
     }
-    res.json({ username: decoded.username, role: decoded.role });
-  });
+    const user = await userServices.signUp(username, password);
+    if (!user) {
+      return res.status(409).json({ message: "Username đã tồn tại" });
+    }
+    const token = jwt.sign(
+      {
+        user: {
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          haveMap: false,
+          haveRestaurant: false,
+        },
+      },
+      SECRET_KEY,
+      { expiresIn: "24h" }
+    );
+    res.status(201).json({
+      message: "Đăng ký thành công",
+      token,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
+
 
 exports.getAccountInformation = async (req, res) => {
   try {
-    //console.log(req);
     const account = await userServices.getAccountDetailByEmail(req.query.email + '@gmail.com');
     res.status(200).json({ account });
     return;
@@ -62,7 +81,7 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const profile = await userServices.updateProfile(req.body.email + '@gmail.com', req.body.data);
-    res.status(200).json(profile);
+    res.status(200).json({ data: profile });
     return;
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -70,12 +89,21 @@ exports.updateProfile = async (req, res) => {
   }
 }
 
-exports.createANewAccount = async (req, res) => { }
+exports.getHashedText = async (req, res) => {
+  const saltRounds = 3;
+  const salt = bcrypt.genSaltSync(saltRounds);
+  hashedText = bcrypt.hashSync(req.query.text, salt);
+  res.status(200).json({ data: hashedText });
+  return;
+}
 
-exports.deleteAnAccount = async (req, res) => { }
-
-exports.getAllAccounts = async (req, res) => { }
-
-exports.getAccountCreatedByAOwner = async (req, res) => { }
-
-exports.getStatistics = async (req, res) => { }
+exports.checkExistAccount = async (req, res) => {
+  try {
+    const exist = await userServices.checkExistAccount(req.query.email + '@gmail.com');
+    res.status(200).json({ exist: exist });
+    return;
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+    return;
+  }
+}
